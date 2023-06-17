@@ -1,9 +1,9 @@
+
 package com.example.demo.service;
 
 import com.example.demo.dao.ParticipantRepository;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Participant;
-import com.example.demo.service.ParticipantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -76,7 +76,55 @@ class ParticipantServiceTest {
         verify(participantRepository, times(1)).findById(id);
     }
 
-    
+    @Test
+    public void testUpdateParticipant() {
+        Long id = 1L;
+        Participant existingParticipant = new Participant();
+        Participant updatedParticipant = new Participant();
+        when(participantRepository.findById(id)).thenReturn(Optional.of(existingParticipant));
+        when(participantRepository.save(existingParticipant)).thenReturn(updatedParticipant);
 
+        Participant result = participantService.updateParticipant(id, existingParticipant);
+
+        assertNotNull(result);
+        assertEquals(updatedParticipant, result);
+        verify(participantRepository, times(1)).findById(id);
+        verify(participantRepository, times(1)).save(existingParticipant);
+    }
+
+    @Test
+    public void testUpdateParticipant_NotFound() {
+        Long id = 1L;
+        Participant participant = new Participant();
+        when(participantRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> participantService.updateParticipant(id, participant));
+        verify(participantRepository, times(1)).findById(id);
+    }
+
+    @Test
+    public void testDeleteParticipant() {
+        Long id = 1L;
+        Participant participant = new Participant();
+        when(participantRepository.findById(id)).thenReturn(Optional.of(participant));
+
+        participantService.deleteParticipant(id);
+
+        verify(participantRepository, times(1)).findById(id);
+        verify(participantRepository, times(1)).delete(participant);
+    }
+
+    @Test
+    public void testDeleteParticipant_NotFound() {
+        Long id = 1L;
+        when(participantRepository.findById(id)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> participantService.deleteParticipant(id));
+        verify(participantRepository, times(1)).findById(id);
+        verify(participantRepository, times(0)).delete(any(Participant.class));
+    }
 }
+
+
+
 

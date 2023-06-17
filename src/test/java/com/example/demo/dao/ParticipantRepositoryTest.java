@@ -39,7 +39,7 @@
 
 package com.example.demo.dao;
 
-import com.example.demo.dao.ParticipantRepository;
+
 import com.example.demo.model.Participant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

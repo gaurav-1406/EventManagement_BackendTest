@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Event;
-import com.example.demo.model.Participant;
 import com.example.demo.service.EventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -81,8 +79,8 @@ class EventControllerTest {
         verify(eventService, times(1)).getEventById(eventId);
     }
 
-    // Add more test methods for other controller endpoints...
+
 
 }
-//
+
 

@@ -40,7 +40,7 @@
 
 package com.example.demo.dao;
 
-import com.example.demo.dao.EventRepository;
+
 import com.example.demo.model.Event;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

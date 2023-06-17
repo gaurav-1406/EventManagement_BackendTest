@@ -1,7 +1,4 @@
 package com.example.demo.model;
-
-import com.example.demo.model.Event;
-import com.example.demo.model.Participant;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -44,8 +41,6 @@ class EventTest {
         assertEquals(description, event.getDescription());
     }
 
-    // Write similar tests for the remaining getters and setters
-
     @Test
     void getParticipantsTest() {
         List<Participant> participants = new ArrayList<>();
@@ -63,23 +58,10 @@ class EventTest {
         assertEquals(participants.get(1), result.get(1));
     }
 
-//    @Test
-//    void registerParticipantTest() {
-//        Participant participant = new Participant();
-//
-//        event.registerParticipant(participant);
-//
-//        List<Participant> participants = event.getParticipants();
-//        assertNotNull(participants);
-//        assertEquals(1, participants.size());
-//        assertEquals(participant, participants.get(0));
-//        assertEquals(event, participant.getEvent());
-//    }
-
     @Test
     void registerParticipantTest() {
         Participant participant = new Participant();
-        event.setParticipants(new ArrayList<>()); // Initialize the participants list
+        event.setParticipants(new ArrayList<>());
 
         event.registerParticipant(participant);
 
