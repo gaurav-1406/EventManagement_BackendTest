@@ -1,4 +1,3 @@
-
 package com.example.demo.service;
 
 import com.example.demo.dao.EventRepository;
@@ -6,6 +5,7 @@ import com.example.demo.dao.ParticipantRepository;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Event;
 import com.example.demo.model.Participant;
+import com.example.demo.service.EventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -174,5 +174,81 @@ class EventServiceTest {
 		verify(eventRepository, times(1)).findById(id);
 	}
 
+
+	// ExistingEventId
+	@Test
+	void deleteEvent_ExistingEventId_DeletesEvent() {
+		Long eventId = 1L;
+		Event event = new Event();
+		when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
+		eventService.deleteEvent(eventId);
+
+		verify(eventRepository, times(1)).findById(eventId);
+		verify(eventRepository, times(1)).delete(event);
+	}
+
+	// NonExistingEventId
+	@Test
+	void deleteEvent_NonExistingEventId_ThrowsResourceNotFoundException() {
+		Long eventId = 1L;
+		when(eventRepository.findById(eventId)).thenReturn(Optional.empty());
+
+		assertThrows(ResourceNotFoundException.class, () -> eventService.deleteEvent(eventId));
+		verify(eventRepository, times(1)).findById(eventId);
+	}
+
+	@Test
+	void getEventParticipants_ExistingEventId_ReturnsParticipants() {
+		Long eventId = 1L;
+		Event event = new Event();
+		List<Participant> participants = new ArrayList<>();
+		event.setParticipants(participants);
+		when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+
+		List<Participant> result = eventService.getEventParticipants(eventId);
+
+		assertNotNull(result);
+		assertEquals(participants, result);
+		verify(eventRepository, times(1)).findById(eventId);
+	}
+
+	@Test
+	void getEventParticipants_NonExistingEventId_ThrowsResourceNotFoundException() {
+		Long eventId = 1L;
+		when(eventRepository.findById(eventId)).thenReturn(Optional.empty());
+
+		assertThrows(ResourceNotFoundException.class, () -> eventService.getEventParticipants(eventId));
+		verify(eventRepository, times(1)).findById(eventId);
+	}
+
+	@Test
+	void registerParticipant_ValidEventAndParticipant_RegistersParticipant() {
+		Long eventId = 1L;
+		Event event = new Event();
+		Participant participant = new Participant();
+		when(eventRepository.findById(eventId)).thenReturn(Optional.of(event));
+		when(participantRepository.save(participant)).thenReturn(participant);
+
+		Participant result = eventService.registerParticipant(eventId, participant);
+
+		assertNotNull(result);
+		assertEquals(event, result.getEvent());
+		verify(eventRepository, times(1)).findById(eventId);
+		verify(participantRepository, times(1)).save(participant);
+	}
+
+
+	@Test
+	void registerParticipantForEvent_NonExistingEventId_ReturnsFalse() {
+		Long eventId = 1L;
+		when(eventRepository.findById(eventId)).thenReturn(Optional.empty());
+
+		boolean result = eventService.registerParticipantForEvent(eventId, new Participant());
+
+		assertFalse(result);
+		verify(eventRepository, times(1)).findById(eventId);
+		verify(eventRepository, never()).save(any(Event.class));
+	}
 }
 

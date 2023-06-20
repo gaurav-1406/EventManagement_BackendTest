@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Event;
+import com.example.demo.model.Participant;
 import com.example.demo.service.EventService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -79,6 +81,46 @@ class EventControllerTest {
         verify(eventService, times(1)).getEventById(eventId);
     }
 
+    @Test
+    public void testUpdateEvent() {
+        Long eventId = 1L;
+        Event eventDetails = new Event();
+        Event updatedEvent = new Event();
+        when(eventService.updateEvent(eventId, eventDetails)).thenReturn(updatedEvent);
+        ResponseEntity<Event> response = eventController.updateEvent(eventId, eventDetails);
+        assertEquals(updatedEvent, response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testDeleteEvent() {
+        Long eventId = 1L;
+        ResponseEntity<Map<String, Boolean>> expectedResponse = ResponseEntity.ok(Map.of("deleted", true));
+        doNothing().when(eventService).deleteEvent(eventId);
+        ResponseEntity<Map<String, Boolean>> response = eventController.deleteEvent(eventId);
+        assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    public void testRegisterParticipantForEvent_Success() {
+        Long eventId = 1L;
+        Participant participant = new Participant();
+        boolean isRegistered = true;
+        when(eventService.registerParticipantForEvent(eventId, participant)).thenReturn(isRegistered);
+        ResponseEntity<String> response = eventController.registerParticipantForEvent(eventId, participant);
+        assertEquals("Participant registered successfully.", response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testRegisterParticipantForEvent_NotFound() {
+        Long eventId = 1L;
+        Participant participant = new Participant();
+        boolean isRegistered = false;
+        when(eventService.registerParticipantForEvent(eventId, participant)).thenReturn(isRegistered);
+        ResponseEntity<String> response = eventController.registerParticipantForEvent(eventId, participant);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
 
 
 }

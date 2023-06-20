@@ -11,8 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -66,5 +67,18 @@ class ParticipantControllerTest {
         verify(participantService, times(1)).getParticipantById(participantId);
     }
 
+
+
+    @Test
+    void testDeleteParticipant() {
+        Map<String, Boolean> expectedResponse = new HashMap<>();
+        expectedResponse.put("deleted", Boolean.TRUE);
+
+        ResponseEntity<Map<String, Boolean>> response = participantController.deleteParticipant(1L);
+
+        assertEquals(expectedResponse, response.getBody());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(participantService, times(1)).deleteParticipant(1L);
+    }
 
 }
